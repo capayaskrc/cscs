@@ -80,7 +80,7 @@
                           
                           </div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">
-                        <?php
+                        P <?php
                             if ($_settings->userdata('type') == 3) {
                                 $total = $conn->query("SELECT SUM(amount) AS total FROM sale_list WHERE user_id = '{$_settings->userdata('id')}' AND YEAR(date_created) = YEAR(CURDATE()) AND MONTH(date_created) = MONTH(CURDATE())");
                             } else {
