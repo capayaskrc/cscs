@@ -1,92 +1,188 @@
 <h1>Welcome to <?php echo $_settings->info('name') ?></h1>
 <hr>
-<div class="row">
-          <div class="col-12 col-sm-4 col-md-4">
-            <div class="info-box">
-              <span class="info-box-icon bg-gradient-light elevation-1"><i class="fas fa-th-list"></i></span>
-              <div class="info-box-content">
-                <span class="info-box-text">Categories List</span>
-                <span class="info-box-number text-right">
-                  <?php 
-                    $category = $conn->query("SELECT * FROM category_list where delete_flag = 0 and `status` = 1")->num_rows;
-                    echo format_num($category);
-                  ?>
-                  <?php ?>
-                </span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-          </div>
-          <div class="col-12 col-sm-4 col-md-4">
-            <div class="info-box">
-              <span class="info-box-icon bg-gradient-navy elevation-1"><i class="fas fa-mug-hot"></i></span>
-              <div class="info-box-content">
-                <span class="info-box-text">Products List</span>
-                <span class="info-box-number text-right">
-                  <?php 
-                    $product = $conn->query("SELECT * FROM product_list where delete_flag = 0 and `status` = 1")->num_rows;
-                    echo format_num($product);
-                  ?>
-                  <?php ?>
-                </span>
-              </div>
-              <!-- /.info-box-content -->
-            </div>
-            <!-- /.info-box -->
-          </div>
-          <!-- /.col -->
-          <div class="col-12 col-sm-4 col-md-4">
-            <div class="info-box">
-              <span class="info-box-icon bg-gradient-primary elevation-1"><i class="fas fa-calendar-day"></i></span>
 
-              <div class="info-box-content">
-                <span class="info-box-text">Today's Sales</span>
-                <span class="info-box-number text-right">
-                  <?php 
-                    if($_settings->userdata('type') == 3):
-                      $total = $conn->query("SELECT sum(amount) as total FROM sale_list where user_id = '{$_settings->userdata('id')}' ");
-                    else:
-                      $total = $conn->query("SELECT sum(amount) as total FROM sale_list");
-                    endif;
-                    $total = $total->num_rows > 0 ? $total->fetch_array()['total'] : 0; 
-                    $total = $total > 0 ? $total : 0;
-                    echo format_num($total);
-                  ?>
-                  <?php ?>
-                </span>
-              </div>
-              <!-- /.info-box-content -->
+        
+        
+<div class="container-fluid">
+  <div class="row">
+
+    <!-- Earnings (Monthly) Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-primary shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Earnings (Daily)</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                       P <?php
+                            if ($_settings->userdata('type') == 3) {
+                                $total = $conn->query("SELECT SUM(amount) AS total FROM sale_list WHERE user_id = '{$_settings->userdata('id')}' AND DATE(date_created) = CURDATE()");
+                            } else {
+                                $total = $conn->query("SELECT SUM(amount) AS total FROM sale_list WHERE DATE(date_created) = CURDATE()");
+                            }
+                            $total = $total->num_rows > 0 ? $total->fetch_array()['total'] : 0;
+                            $total = $total > 0 ? $total : 0;
+                            echo format_num($total);
+                            ?>
+
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                    <i class="fas fa-money-check fa-2x text-gray-300"></i>
+                    </div>
+                </div>
             </div>
-            <!-- /.info-box -->
-          </div>
-          <!-- /.col -->
         </div>
-<div class="container">
-  <?php 
-    $files = array();
-      $fopen = scandir(base_app.'uploads/banner');
-      foreach($fopen as $fname){
-        if(in_array($fname,array('.','..')))
-          continue;
-        $files[]= validate_image('uploads/banner/'.$fname);
-      }
-  ?>
-  <div id="tourCarousel"  class="carousel slide" data-ride="carousel" data-interval="3000">
-      <div class="carousel-inner h-100">
-          <?php foreach($files as $k => $img): ?>
-          <div class="carousel-item  h-100 <?php echo $k == 0? 'active': '' ?>">
-              <img class="d-block w-100  h-100" style="object-fit:contain" src="<?php echo $img ?>" alt="">
-          </div>
-          <?php endforeach; ?>
-      </div>
-      <a class="carousel-control-prev" href="#tourCarousel" role="button" data-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="sr-only">Previous</span>
-      </a>
-      <a class="carousel-control-next" href="#tourCarousel" role="button" data-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="sr-only">Next</span>
-      </a>
-  </div>
+    </div>
+
+    <!-- Earnings (Annual) Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                            Earnings (Weekly)</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                       P <?php
+                          if ($_settings->userdata('type') == 3) {
+                              $total = $conn->query("SELECT SUM(amount) AS total FROM sale_list WHERE user_id = '{$_settings->userdata('id')}' AND WEEK(date_created) = WEEK(CURDATE()) AND YEAR(date_created) = YEAR(CURDATE())");
+                          } else {
+                              $total = $conn->query("SELECT SUM(amount) AS total FROM sale_list WHERE WEEK(date_created) = WEEK(CURDATE()) AND YEAR(date_created) = YEAR(CURDATE())");
+                          }
+                          $total = $total->num_rows > 0 ? $total->fetch_array()['total'] : 0;
+                          $total = $total > 0 ? $total : 0;
+                          echo format_num($total);
+                          ?>
+
+
+
+
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-money-check fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tasks Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                        Earnings (Monthly)
+                          
+                          </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                        <?php
+                            if ($_settings->userdata('type') == 3) {
+                                $total = $conn->query("SELECT SUM(amount) AS total FROM sale_list WHERE user_id = '{$_settings->userdata('id')}' AND YEAR(date_created) = YEAR(CURDATE()) AND MONTH(date_created) = MONTH(CURDATE())");
+                            } else {
+                                $total = $conn->query("SELECT SUM(amount) AS total FROM sale_list WHERE YEAR(date_created) = YEAR(CURDATE()) AND MONTH(date_created) = MONTH(CURDATE())");
+                            }
+                            $total = $total->num_rows > 0 ? $total->fetch_array()['total'] : 0;
+                            $total = $total > 0 ? $total : 0;
+                            echo format_num($total);
+                            ?>
+
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                    <i class="fas fa-money-check fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pending Requests Card Example -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-warning shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                            Category List
+                          
+                          </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                        <?php 
+                          $category = $conn->query("SELECT * FROM category_list where delete_flag = 0 and `status` = 1")->num_rows;
+                          echo format_num($category);
+                        ?>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                          
+                        <i class="fas fa-list fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+             
+
+
+
+<canvas id="incomeChart"></canvas>
+
+
+
+<script>
+    $(document).ready(function() {
+  $.ajax({
+    url: 'admin/get_daily_income.php', // Replace with the correct URL to the get_daily_income.php script
+    type: 'GET',
+    dataType: 'json',
+    success: function(data) {
+      var dates = [];
+      var income = [];
+      
+      // Extracting data from the AJAX response
+      for (var i = 0; i < data.length; i++) {
+        dates.push(data[i].date);
+        income.push(data[i].amount);
+      }
+      
+      // Creating the chart using Chart.js
+      var ctx = document.getElementById('incomeChart').getContext('2d');
+      var chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: dates,
+          datasets: [{
+            label: 'Daily Income',
+            data: income,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    },
+    error: function(xhr, status, error) {
+      // Handle the error case
+      console.log(error);
+    }
+  });
+});
+
+  </script>
+
+
+
+
