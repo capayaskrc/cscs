@@ -52,11 +52,11 @@ class SystemSettings extends DBConnection{
 		if(!empty($_FILES['img']['tmp_name'])){
 			$ext = pathinfo($_FILES['img']['name'], PATHINFO_EXTENSION);
 			$fname = "uploads/logo.png";
-			$accept = array('image/jpeg','image/png');
+			$accept = array('image/jpg','image/png');
 			if(!in_array($_FILES['img']['type'],$accept)){
 				$err = "Image file type is invalid";
 			}
-			if($_FILES['img']['type'] == 'image/jpeg')
+			if($_FILES['img']['type'] == 'image/jpg')
 				$uploadfile = imagecreatefromjpeg($_FILES['img']['tmp_name']);
 			elseif($_FILES['img']['type'] == 'image/png')
 				$uploadfile = imagecreatefrompng($_FILES['img']['tmp_name']);

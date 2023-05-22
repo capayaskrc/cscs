@@ -13,21 +13,25 @@ function redirect($url=''){
 	if(!empty($url))
 	echo '<script>location.href="'.base_url .$url.'"</script>';
 }
-function validate_image($file){
-	if(!empty($file)){
-			// exit;
-        $ex = explode("?",$file);
+
+
+function validate_image($file) {
+    if (!empty($file)) {
+        $ex = explode("?", $file);
         $file = $ex[0];
-        $ts = isset($ex[1]) ? "?".$ex[1] : '';
-		if(is_file(base_app.$file)){
-			return base_url.$file.$ts;
-		}else{
-			return base_url.'dist/img/no-image-available.png';
-		}
-	}else{
-		return base_url.'dist/img/no-image-available.png';
-	}
+        $ts = isset($ex[1]) ? "?" . $ex[1] : '';
+
+        if (is_file(base_app . $file)) {
+            return base_url . $file . $ts;
+        } else {
+            return base_url . 'dist/img/login-page.jpg';
+        }
+    } else {
+        return base_url . 'dist/img/logo.jpg';
+    }
 }
+
+
 function format_num($number = '' , $decimal = ''){
     if(is_numeric($number)){
         $ex = explode(".",$number);
